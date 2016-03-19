@@ -60,6 +60,7 @@ Benchmark_SOURCES = \
 Benchmark_LDADD = libtestgencpp.la
 
 check_PROGRAMS = \
+	UnitTests \
 	TFDTransportTest \
 	TPipedTransportTest \
 	DebugProtoTest \
@@ -71,7 +72,6 @@ check_PROGRAMS = \
 	TransportTest \
 	ZlibTest \
 	TFileTransportTest \
-	UnitTests \
 	link_test \
 	OpenSSLManualInitTest \
 	EnumTest
@@ -90,7 +90,8 @@ UnitTests_SOURCES = \
 	TBufferBaseTest.cpp \
 	Base64Test.cpp \
 	ToStringTest.cpp \
-	TypedefTest.cpp
+	TypedefTest.cpp \
+        TServerSocketTest.cpp
 
 if !WITH_BOOSTTHREADS
 UnitTests_SOURCES += \
