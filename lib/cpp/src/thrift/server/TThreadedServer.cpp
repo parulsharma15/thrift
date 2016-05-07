@@ -195,6 +195,9 @@ void TThreadedServer::serve() {
       if (outputTransport) { outputTransport->close(); }
       if (client) { client->close(); }
       if (!stop_ || ttx.getType() != TTransportException::INTERRUPTED) {
+        if (ttx.getType() == TTransportException::NOT_OPEN) {
+          stop_ = true;
+        }
         string errStr = string("TThreadedServer: TServerTransport died on accept: ") + ttx.what();
         GlobalOutput(errStr.c_str());
       }

@@ -63,8 +63,11 @@ void TSimpleServer::serve() {
       if (outputTransport) { outputTransport->close(); }
       if (client) { client->close(); }
       if (!stop_ || ttx.getType() != TTransportException::INTERRUPTED) {
-          string errStr = string("TServerTransport died on accept: ") + ttx.what();
-          GlobalOutput(errStr.c_str());
+        if (ttx.getType() == TTransportException::NOT_OPEN) {
+          stop_ = true;
+        }
+        string errStr = string("TServerTransport died on accept: ") + ttx.what();
+        GlobalOutput(errStr.c_str());
       }
       continue;
     } catch (TException& tx) {
