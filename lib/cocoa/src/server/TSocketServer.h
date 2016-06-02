@@ -45,6 +45,8 @@ extern NSString * const kTSockerServer_TransportKey;
 
 - (void)stop;
 
+@property (nonatomic, readonly) int port;
+
 @end
 
 
