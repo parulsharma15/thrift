@@ -88,7 +88,7 @@ NSString * const kTSockerServer_TransportKey = @"TSockerServer_Transport";
     CFRelease(socket);
     
     self.clientSockets = [[NSMutableSet alloc] init];
-    self.clientSocketQueue = dispatch_queue_create("com.kamama.tsocketserver.queue", DISPATCH_QUEUE_SERIAL);
+    self.clientSocketQueue = dispatch_queue_create("org.apache.thrift.tsocketserver.queue", DISPATCH_QUEUE_SERIAL);
     
     // register for notifications of accepted incoming connections
     [[NSNotificationCenter defaultCenter] addObserver: self
