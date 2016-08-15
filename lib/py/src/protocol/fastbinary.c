@@ -121,7 +121,7 @@ typedef enum TType {
 // Doing a benchmark shows that interning actually makes a difference, amazingly.
 #define INTERN_STRING(value) _intern_ ## value
 
-#define INT_CONV_ERROR_OCCURRED(v) ( ((v) == -1) && PyErr_Occurred() )
+#define INT_CONV_CRAP_OCCURRED(v) ( ((v) == -1) && PyErr_Occurred() )
 #define CHECK_RANGE(v, min, max) ( ((v) <= (max)) && ((v) >= (min)) )
 
 // Py_ssize_t was not defined before Python 2.5
@@ -187,7 +187,7 @@ static PyObject* INTERN_STRING(cstringio_refill);
 static inline bool
 check_ssize_t_32(Py_ssize_t len) {
   // error from getting the int
-  if (INT_CONV_ERROR_OCCURRED(len)) {
+  if (INT_CONV_CRAP_OCCURRED(len)) {
     return false;
   }
   if (!CHECK_RANGE(len, 0, INT32_MAX)) {
@@ -201,7 +201,7 @@ static inline bool
 parse_pyint(PyObject* o, int32_t* ret, int32_t min, int32_t max) {
   long val = PyInt_AsLong(o);
 
-  if (INT_CONV_ERROR_OCCURRED(val)) {
+  if (INT_CONV_CRAP_OCCURRED(val)) {
     return false;
   }
   if (!CHECK_RANGE(val, min, max)) {
@@ -224,7 +224,7 @@ parse_set_list_args(SetListTypeArgs* dest, PyObject* typeargs) {
   }
 
   dest->element_type = PyInt_AsLong(PyTuple_GET_ITEM(typeargs, 0));
-  if (INT_CONV_ERROR_OCCURRED(dest->element_type)) {
+  if (INT_CONV_CRAP_OCCURRED(dest->element_type)) {
     return false;
   }
 
@@ -241,12 +241,12 @@ parse_map_args(MapTypeArgs* dest, PyObject* typeargs) {
   }
 
   dest->ktag = PyInt_AsLong(PyTuple_GET_ITEM(typeargs, 0));
-  if (INT_CONV_ERROR_OCCURRED(dest->ktag)) {
+  if (INT_CONV_CRAP_OCCURRED(dest->ktag)) {
     return false;
   }
 
   dest->vtag = PyInt_AsLong(PyTuple_GET_ITEM(typeargs, 2));
-  if (INT_CONV_ERROR_OCCURRED(dest->vtag)) {
+  if (INT_CONV_CRAP_OCCURRED(dest->vtag)) {
     return false;
   }
 
@@ -279,12 +279,12 @@ parse_struct_item_spec(StructItemSpec* dest, PyObject* spec_tuple) {
   }
 
   dest->tag = PyInt_AsLong(PyTuple_GET_ITEM(spec_tuple, 0));
-  if (INT_CONV_ERROR_OCCURRED(dest->tag)) {
+  if (INT_CONV_CRAP_OCCURRED(dest->tag)) {
     return false;
   }
 
   dest->type = PyInt_AsLong(PyTuple_GET_ITEM(spec_tuple, 1));
-  if (INT_CONV_ERROR_OCCURRED(dest->type)) {
+  if (INT_CONV_CRAP_OCCURRED(dest->type)) {
     return false;
   }
 
@@ -390,7 +390,7 @@ output_val(PyObject* output, PyObject* value, TType type, PyObject* typeargs) {
   case T_I64: {
     int64_t nval = PyLong_AsLongLong(value);
 
-    if (INT_CONV_ERROR_OCCURRED(nval)) {
+    if (INT_CONV_CRAP_OCCURRED(nval)) {
       return false;
     }
 
@@ -737,7 +737,7 @@ static double readDouble(DecodeBuffer* input) {
 static bool
 checkTypeByte(DecodeBuffer* input, TType expected) {
   TType got = readByte(input);
-  if (INT_CONV_ERROR_OCCURRED(got)) {
+  if (INT_CONV_CRAP_OCCURRED(got)) {
     return false;
   }
 
@@ -892,7 +892,7 @@ decode_struct(DecodeBuffer* input, PyObject* output, PyObject* spec_seq) {
       break;
     }
     tag = readI16(input);
-    if (INT_CONV_ERROR_OCCURRED(tag)) {
+    if (INT_CONV_CRAP_OCCURRED(tag)) {
       return false;
     }
     if (tag >= 0 && tag < spec_seq_len) {
@@ -945,7 +945,7 @@ decode_val(DecodeBuffer* input, TType type, PyObject* typeargs) {
 
   case T_BOOL: {
     int8_t v = readByte(input);
-    if (INT_CONV_ERROR_OCCURRED(v)) {
+    if (INT_CONV_CRAP_OCCURRED(v)) {
       return NULL;
     }
 
@@ -959,7 +959,7 @@ decode_val(DecodeBuffer* input, TType type, PyObject* typeargs) {
   }
   case T_I08: {
     int8_t v = readByte(input);
-    if (INT_CONV_ERROR_OCCURRED(v)) {
+    if (INT_CONV_CRAP_OCCURRED(v)) {
       return NULL;
     }
 
@@ -967,14 +967,14 @@ decode_val(DecodeBuffer* input, TType type, PyObject* typeargs) {
   }
   case T_I16: {
     int16_t v = readI16(input);
-    if (INT_CONV_ERROR_OCCURRED(v)) {
+    if (INT_CONV_CRAP_OCCURRED(v)) {
       return NULL;
     }
     return PyInt_FromLong(v);
   }
   case T_I32: {
     int32_t v = readI32(input);
-    if (INT_CONV_ERROR_OCCURRED(v)) {
+    if (INT_CONV_CRAP_OCCURRED(v)) {
       return NULL;
     }
     return PyInt_FromLong(v);
@@ -982,7 +982,7 @@ decode_val(DecodeBuffer* input, TType type, PyObject* typeargs) {
 
   case T_I64: {
     int64_t v = readI64(input);
-    if (INT_CONV_ERROR_OCCURRED(v)) {
+    if (INT_CONV_CRAP_OCCURRED(v)) {
       return NULL;
     }
     // TODO(dreiss): Find out if we can take this fastpath always when
